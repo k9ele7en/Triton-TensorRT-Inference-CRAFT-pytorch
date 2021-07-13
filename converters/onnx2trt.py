@@ -74,7 +74,7 @@ if __name__ == '__main__':
     output_path = Path('../model_repository/detec_trt/1')
 
     # Set name for onnx files
-    output_detec = os.path.join(output_path, "detec_trt.engine")
+    output_detec = os.path.join(output_path, "detec_trt.plan")
 
     cfg_detec = get_cfg_defaults()
     cfg_detec.merge_from_file(model_config)
