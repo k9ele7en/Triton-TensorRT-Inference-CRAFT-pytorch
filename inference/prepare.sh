@@ -37,4 +37,4 @@ if [ ${failed} -ne 0 ]; then
 
 # III. Start Triton server image in container, mount Model Repo prepared into container volume
 # Update the full path to data/model_repository follow deploy server path: "-v <full_path_to>/ocr-components-triton/akaocr/data/model_repository:/models"
-sudo docker run --gpus all --rm -p8000:8000 -p8001:8001 -p8002:8002 -v /home/maverick911/repo/ocr-components/akaocr/data/model_repository:/models nvcr.io/nvidia/tritonserver:21.05-py3 tritonserver --model-repository=/models
+sudo docker run --gpus all --rm -p8000:8000 -p8001:8001 -p8002:8002 -v /home/maverick911/repo/triton-server-CRAFT-pytorch/model_repository:/models nvcr.io/nvidia/tritonserver:21.05-py3 tritonserver --model-repository=/models

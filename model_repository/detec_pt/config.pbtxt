@@ -16,7 +16,7 @@ output [
     dims: [ -1, -1, 2 ]
   },
   {
-    name: "281__1"
+    name: "output__1"
     data_type: TYPE_FP32
     dims: [ 32, -1, -1 ]
   }
