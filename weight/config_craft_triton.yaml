@@ -1,0 +1,25 @@
+INFERENCE:
+
+  # for triton and multiple model format infer:
+  OX_DO_CONSTANT_FOLDING : True
+
+  OX_EXPORT_PARAMS : True
+
+  OX_OPSET : 11
+
+  OX_VERBOSE : False
+
+  # Use dynamic input
+  TRT_DYNAMIC : True
+
+  TRT_MIN_SHAPE : (1,3,256,256)
+
+  TRT_OPT_SHAPE : (1,3,700,700)
+
+  TRT_MAX_SHAPE : (1,3,1200,1200)
+
+  # Use mix-precision (FP16)
+  TRT_AMP : True
+
+  # Workspace size for export engine process (in GB), default=5 GB
+  TRT_WORKSPACE : 5
