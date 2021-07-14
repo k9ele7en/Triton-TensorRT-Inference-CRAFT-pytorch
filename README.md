@@ -9,7 +9,8 @@ Official Pytorch implementation of CRAFT text detector | [Paper](https://arxiv.o
 Implementation new inference pipeline using NVIDIA Triton Inference Server for CRAFT text detector in Pytorch.
 
 ## Updates
-**13 Jul, 2021**: Initial update, converters done.
+**13 Jul, 2021**: Initial update, preparation script run well.
+**14 Jul, 2021**: Inference on Triton server run well (single request), TensorRT format give advance performance.
 
 
 ## Getting started
@@ -77,6 +78,9 @@ $ python infer_triton.py -m='detec_trt' -x=1 --test_folder='./images' -i='grpc' 
 Request 1, batch size 1s/sample.jpg
 elapsed time : 0.9521937370300293s
 ```
+Output from Triton: <br>
+    <img src="./result/res_sample_triton.jpg" width="200">
+
 #### Performance benchmarks: single image (sample.jpg), time in seconds
 - Triton server: (gRPC-HTTP): <br>
 
