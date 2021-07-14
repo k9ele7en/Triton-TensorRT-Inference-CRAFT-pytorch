@@ -3,6 +3,7 @@ import os
 import numpy as np
 import cv2
 import imgproc
+from icecream import ic
 
 # borrowed from https://github.com/lengstrom/fast-style-transfer/blob/master/src/utils.py
 def get_files(img_dir):
@@ -30,7 +31,7 @@ def list_files(in_path):
     # gt_files.sort()
     return img_files, mask_files, gt_files
 
-def saveResult(method='triton', img_file, img, boxes, dirname='./result/', verticals=None, texts=None):
+def saveResult(img_file, img, boxes, dirname='./result/', verticals=None, texts=None, method='triton'):
         """ save text detection result one by one
         Args:
             img_file (str): image file name
@@ -46,8 +47,9 @@ def saveResult(method='triton', img_file, img, boxes, dirname='./result/', verti
         filename, file_ext = os.path.splitext(os.path.basename(img_file))
 
         # result directory
-        res_file = dirname + "res_" + filename + '.txt' if method!='triton' else '_triton.txt'
-        res_img_file = dirname + "res_" + filename + '.jpg' if method!='triton' else '_triton.txt'
+        tmp_name = dirname + "res_" + filename
+        res_file = tmp_name + '.txt' if method!='triton' else tmp_name + '_triton.txt'
+        res_img_file = tmp_name + '.jpg' if method!='triton' else tmp_name + '_triton.jpg'
 
         if not os.path.isdir(dirname):
             os.mkdir(dirname)

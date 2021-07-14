@@ -58,8 +58,8 @@ There are multiple method to infer the detec pipeline, devided into 2 main types
 If you run the pipeline using single model format, run as below, no need environment installation as Triton server.
 ```
 $ cd inference
-Run infer_pipeline.py with target method (pth/onnx/tensorrt) and suitable arguments of that method. Use single format, for ex pth format:
-$ python infer_pipeline.py --method='pth' --input='./images/image_1.jpg'
+Run infer_triton.py with target method (pth/onnx/tensorrt) and suitable arguments of that method. Use single format, for ex pth format:
+$ python infer_triton.py -m='detec_pt' -x=1 --test_folder='./images'
 ```
 ## I. Setup environment and tools
 First, update your PIP:
@@ -225,12 +225,12 @@ Convert source model into target formats and copy into Triton's Model Repository
 ## III. Run the server and client to infer (included in .sh script):
 Run server in container and client in cmd
 ```
-$ sudo docker run --gpus all --rm -p8000:8000 -p8001:8001 -p8002:8002 -v <full_path_to/data/model_repository>:/models nvcr.io/nvidia/tritonserver:<xx.yy>-py3 tritonserver --model-repository=/models
+$ sudo docker run --gpus all --rm -p8000:8000 -p8001:8001 -p8002:8002 -v <full_path_to/model_repository>:/models nvcr.io/nvidia/tritonserver:<xx.yy>-py3 tritonserver --model-repository=/models
 
-For example, run on server with full path "/home/maverick911/repo/Triton-server-CRAFT-pytorch
-/data/model_repository":
-$ sudo docker run --gpus all --rm -p8000:8000 -p8001:8001 -p8002:8002 -v /home/maverick911/repo/Triton-server-CRAFT-pytorch
-/data/model_repository:/models nvcr.io/nvidia/tritonserver:21.05-py3 tritonserver --model-repository=/models
+For example, run on server with full path "/home/maverick911/repo/triton-server-CRAFT-pytorch
+/model_repository":
+$ sudo docker run --gpus all --rm -p8000:8000 -p8001:8001 -p8002:8002 -v /home/maverick911/repo/triton-server-CRAFT-pytorch
+/model_repository:/models nvcr.io/nvidia/tritonserver:21.05-py3 tritonserver --model-repository=/models
 
 +----------------------+---------+--------+
 | Model                | Version | Status |
@@ -244,18 +244,21 @@ I0611 04:10:23.080860 1 http_server.c9:2906] Started Metrics Service at 0.0.0.0:
 ```
 2. Infer by client in cmd (this repo), with method (triton), model name (<model_type>_\<format>), version (not required). For ex:
 ```
-$ cd Triton-server-CRAFT-pytorch/
-$ python infer_pipeline.py --method='triton' -m='detec_onnx' -x=1 --input='./images/image_1.jpg'
-
+$ cd triton-server-CRAFT-pytorch/
+$ python infer_triton.py -m='detec_trt' -x=1 --test_folder='./images'
+Request 1, batch size 1s/sample.jpg
+elapsed time : 0.9521937370300293s
 ```
 ```
-$ python infer_pipeline.py --method='triton' -m='detec_trt' -x=1 --input='./images/image_1.jpg'
+$ python infer_triton.py -m='detec_pt' -x=1 --test_folder='./images' -i='grpc' -u='localhost:8001'
+Request 1, batch size 1s/sample.jpg
+elapsed time : 1.244419813156128s
 ```
 -------
 Run server in container and client sdk in container:
 1. Start the server side:
 ```
-$ sudo docker run --gpus all --rm -p8000:8000 -p8001:8001 -p8002:8002 -v /home/maverick911/repo/Triton-server-CRAFT-pytorch/model_repository:/models nvcr.io/nvidia/tritonserver:21.05-py3 tritonserver --model-repository=/models
+$ sudo docker run --gpus all --rm -p8000:8000 -p8001:8001 -p8002:8002 -v /home/maverick911/repo/triton-server-CRAFT-pytorch/model_repository:/models nvcr.io/nvidia/tritonserver:21.05-py3 tritonserver --model-repository=/models
 
 +----------------------+---------+--------+
 | Model                | Version | Status |
@@ -271,4 +274,4 @@ I0611 04:10:23.080860 1 http_server.c9:2906] Started Metrics Service at 0.0.0.0:
 ```
 $ sudo docker run -it --rm --net=host -v <full_path/to/repo>:/workspace/client nvcr.io/nvidia/tritonserver:<xx.yy>-py3-sdk
 ```
-3. Use infer_pipeline.py as example above to run.
+3. Use infer_triton.py as example above to run.

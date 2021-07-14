@@ -14,4 +14,4 @@ onnxruntime-gpu
 nvidia-pyindex
 onnx_graphsurgeon
 
-#tritonclient[all]
+tritonclient[all]

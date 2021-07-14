@@ -3,10 +3,10 @@
 """
 _____________________________________________________________________________
 
-This file main inference pipeline to Triton
+This file contains main inference pipeline to Triton
 _____________________________________________________________________________
 """
-
+from icecream import ic
 import sys
 import os
 import time
@@ -30,23 +30,21 @@ import zipfile
 
 from collections import OrderedDict
 
-import tritonclient as triton
+import triton_utils as triton
 
 def str2bool(v):
     return v.lower() in ("yes", "y", "true", "t", "1")
 
-parser = argparse.ArgumentParser(description='CRAFT Text Detection')
+parser = argparse.ArgumentParser(description='Triton inference pipeline for CRAFT Text Detection')
 parser.add_argument('--text_threshold', default=0.7, type=float, help='text confidence threshold')
 parser.add_argument('--low_text', default=0.4, type=float, help='text low-bound score')
 parser.add_argument('--link_threshold', default=0.4, type=float, help='link confidence threshold')
 parser.add_argument('--cuda', default=True, type=str2bool, help='Use cuda for inference')
-parser.add_argument('--canvas_size', default=1280, type=int, help='image size for inference')
+parser.add_argument('--canvas_size', default=1100, type=int, help='image size for inference')
 parser.add_argument('--mag_ratio', default=1.5, type=float, help='image magnification ratio')
 parser.add_argument('--poly', default=False, action='store_true', help='enable polygon type')
 parser.add_argument('--show_time', default=False, action='store_true', help='show processing time')
-parser.add_argument('--test_folder', default='/data/', type=str, help='folder path to input images')
-parser.add_argument('--refine', default=False, action='store_true', help='enable link refiner')
-parser.add_argument('--refiner_model', default='weights/craft_refiner_CTW1500.pth', type=str, help='pretrained refiner model')
+parser.add_argument('--test_folder', default='images/', type=str, help='folder path to input images')
 
 # triton server
 parser.add_argument('-v',
@@ -110,7 +108,7 @@ result_folder = './result/'
 if not os.path.isdir(result_folder):
     os.mkdir(result_folder)
 
-def test_net(args, net, image, text_threshold, link_threshold, low_text, cuda, poly):
+def test_net(args, image, text_threshold, link_threshold, low_text, cuda, poly):
     t0 = time.time()
 
     # resize
@@ -120,13 +118,13 @@ def test_net(args, net, image, text_threshold, link_threshold, low_text, cuda, p
     # preprocessing
     x = imgproc.normalizeMeanVariance(img_resized)
     x = torch.from_numpy(x).permute(2, 0, 1)    # [h, w, c] to [c, h, w]
-    x = Variable(x.unsqueeze(0))                # [c, h, w] to [b, c, h, w]
-    if cuda:
-        x = x.cuda()
+    # x = Variable(x.unsqueeze(0))                # [c, h, w] to [b, c, h, w]
+    # if cuda:
+    #     x = x.cuda()
 
     # send request to triton server
-    y, feature = triton.triton_requester(args, x)
-    
+    y = triton.triton_requester(args, x)
+
     # make score and link map
     score_text = y[0,:,:,0].cpu().data.numpy()
     score_link = y[0,:,:,1].cpu().data.numpy()
@@ -158,19 +156,24 @@ def test_net(args, net, image, text_threshold, link_threshold, low_text, cuda, p
 
 
 if __name__ == '__main__':
-
+    t = time.time()
     # load data
     for k, image_path in enumerate(image_list):
         print("Test image {:d}/{:d}: {:s}".format(k+1, len(image_list), image_path), end='\r')
         image = imgproc.loadImage(image_path)
 
-        bboxes, polys, score_text = test_net(args, net, image, args.text_threshold, args.link_threshold, args.low_text, args.cuda, args.poly, refine_net)
+        bboxes, polys, score_text = test_net(args, image, args.text_threshold, args.link_threshold, args.low_text, args.cuda, args.poly)
 
         # save score text
-        filename, file_ext = os.path.splitext(os.path.basename(image_path))
-        mask_file = result_folder + "/res_" + filename + '_mask_triton.jpg'
-        cv2.imwrite(mask_file, score_text)
+        # filename, file_ext = os.path.splitext(os.path.basename(image_path))
+        # mask_file = result_folder + "/res_" + filename + '_mask_triton.jpg'
+        # cv2.imwrite(mask_file, score_text)
 
-        file_utils.saveResult(method='triton', image_path, image[:,:,::-1], polys, dirname=result_folder)
+        file_utils.saveResult(image_path, image[:,:,::-1], polys, dirname=result_folder, method='triton')
 
     print("elapsed time : {}s".format(time.time() - t))
+
+# Example cmd:
+# python infer_triton.py -m='detec_trt' -x=1 --test_folder='./images' -i='grpc' -u='localhost:8001'
+# python infer_triton.py -m='detec_onnx' -x=1 --test_folder='./images'
+# python infer_triton.py -m='detec_pt' -x=1 --test_folder='./images'

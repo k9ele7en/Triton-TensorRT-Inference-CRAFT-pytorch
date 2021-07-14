@@ -2,7 +2,12 @@
 Copyright (c) 2019-present NAVER Corp.
 MIT License
 """
+"""
+_____________________________________________________________________________
 
+This file contains classic Pytorch pth inference from forked repo
+_____________________________________________________________________________
+"""
 # -*- coding: utf-8 -*-
 import sys
 import os
@@ -166,7 +171,7 @@ if __name__ == '__main__':
         mask_file = result_folder + "/res_" + filename + '_mask.jpg'
         cv2.imwrite(mask_file, score_text)
 
-        file_utils.saveResult(method='pth', image_path, image[:,:,::-1], polys, dirname=result_folder)
+        file_utils.saveResult(image_path, image[:,:,::-1], polys, dirname=result_folder, method='pth')
 
     print("Done, elapsed time : {}s. Check at folder result/".format(time.time() - t))
 

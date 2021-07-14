@@ -73,20 +73,34 @@ I0714 00:37:55.312507 1 http_server.cc:2906] Started Metrics Service at 0.0.0.0:
 ```
 Run infer by cmd: 
 ```
-$ python infer_triton.py -m='detec_trt' -x=1 --input='./images/image_1.jpg' -i='grpc' -u='localhost:8001'
-
-$ python infer_triton.py -m='detec_onnx' -x=1 --input='./images/image_1.jpg'
+$ python infer_triton.py -m='detec_trt' -x=1 --test_folder='./images' -i='grpc' -u='localhost:8001'
+Request 1, batch size 1s/sample.jpg
+elapsed time : 0.9521937370300293s
 ```
+#### Performance benchmarks: single image (sample.jpg), time in seconds
+- Triton server: (gRPC-HTTP): <br>
+
+    | Model format| gRPC (s)| HTTP (s) |
+    |-------------|---------|----------|
+    | TensoRT     | 0.946   | 0.952    |
+    | Torchscript | 1.244   | 1.098    |
+    | ONNX        | 1.052   | 1.060    |
+
+- Classic Pytorch: 1.319s
 
 #### Arguments
 * `-m`: name of model with format
 * `-x`: version of model
-* `--input`: input image/folder
+* `--test_folder`: input image/folder
 * `-i`: protocol (HTTP/gRPC)
 * `-u`: URL of corresponding protocol (HTTP-8000, gRPC-8001)
 * ... (Details in ./infer_triton.py)
 
-
+#### Notes:
+- Error below is caused by wrong dynamic input shapes, check if the input image shape is valid to dynamic shapes in config.
+```
+inference failed: [StatusCode.INTERNAL] request specifies invalid shape for input 'input' for detec_trt_0_gpu0. Error details: model expected the shape of dimension 2 to be between 256 and 1200 but received 1216
+```
 b. Classic Pytorch (.pth) inference:
 ```
 $ python test.py --trained_model=[weightfile] --test_folder=[folder path to test images]
