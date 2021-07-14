@@ -10,6 +10,7 @@ Implementation new inference pipeline using NVIDIA Triton Inference Server for C
 
 ## Updates
 **13 Jul, 2021**: Initial update, preparation script run well.
+
 **14 Jul, 2021**: Inference on Triton server run well (single request), TensorRT format give advance performance.
 
 
