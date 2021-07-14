@@ -216,9 +216,9 @@ $ curl https://get.docker.com | sh \
 Pull repo, image, and prepare models (Where <xx.yy> is the version of Triton that you want to use):
 ```
 $ sudo docker pull nvcr.io/nvidia/tritonserver:<xx.yy>-py3
-$ git clone https://github.com/huukim911/Triton-server-CRAFT-pytorch.git
+$ git clone https://github.com/huukim911/triton-server-CRAFT-pytorch.git
 Run the .sh script to convert model into target formats, prepare Model Repo and start Triton server container:
-$ cd inference
+$ cd triton-server-CRAFT-pytorch
 $ sh prepare.sh
 Convert source model into target formats and copy into Triton's Model Repository successfully.
 ```

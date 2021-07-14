@@ -60,7 +60,7 @@ def build_onnx(args):
                       do_constant_folding=cfg_detec.INFERENCE.OX_DO_CONSTANT_FOLDING,
                       export_params=cfg_detec.INFERENCE.OX_EXPORT_PARAMS,
                       input_names=["input"],
-                      output_names=["output", "output2"],
+                      output_names=["output", "output1"],
                       dynamic_axes={"input": {0: "batch", 2: "height", 3: "width"}})
 
     logger.info("Convert detec pth to ONNX sucess")

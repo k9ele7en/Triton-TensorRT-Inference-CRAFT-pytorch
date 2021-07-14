@@ -1,9 +1,12 @@
-"""  
-Copyright (c) 2019-present NAVER Corp.
-MIT License
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+_____________________________________________________________________________
+
+This file main inference pipeline to Triton
+_____________________________________________________________________________
 """
 
-# -*- coding: utf-8 -*-
 import sys
 import os
 import time
@@ -25,23 +28,9 @@ import file_utils
 import json
 import zipfile
 
-from craft import CRAFT
-
 from collections import OrderedDict
 
-sys.path.append("../../")
-import inference.tritonclient as triton
-
-def copyStateDict(state_dict):
-    if list(state_dict.keys())[0].startswith("module"):
-        start_idx = 1
-    else:
-        start_idx = 0
-    new_state_dict = OrderedDict()
-    for k, v in state_dict.items():
-        name = ".".join(k.split(".")[start_idx:])
-        new_state_dict[name] = v
-    return new_state_dict
+import tritonclient as triton
 
 def str2bool(v):
     return v.lower() in ("yes", "y", "true", "t", "1")
@@ -169,39 +158,6 @@ def test_net(args, net, image, text_threshold, link_threshold, low_text, cuda, p
 
 
 if __name__ == '__main__':
-    # load net
-    net = CRAFT()     # initialize
-
-    print('Loading weights from checkpoint (' + args.trained_model + ')')
-    if args.cuda:
-        net.load_state_dict(copyStateDict(torch.load(args.trained_model)))
-    else:
-        net.load_state_dict(copyStateDict(torch.load(args.trained_model, map_location='cpu')))
-
-    if args.cuda:
-        net = net.cuda()
-        net = torch.nn.DataParallel(net)
-        cudnn.benchmark = False
-
-    net.eval()
-
-    # LinkRefiner
-    refine_net = None
-    if args.refine:
-        from refinenet import RefineNet
-        refine_net = RefineNet()
-        print('Loading weights of refiner from checkpoint (' + args.refiner_model + ')')
-        if args.cuda:
-            refine_net.load_state_dict(copyStateDict(torch.load(args.refiner_model)))
-            refine_net = refine_net.cuda()
-            refine_net = torch.nn.DataParallel(refine_net)
-        else:
-            refine_net.load_state_dict(copyStateDict(torch.load(args.refiner_model, map_location='cpu')))
-
-        refine_net.eval()
-        args.poly = True
-
-    t = time.time()
 
     # load data
     for k, image_path in enumerate(image_list):
@@ -212,9 +168,9 @@ if __name__ == '__main__':
 
         # save score text
         filename, file_ext = os.path.splitext(os.path.basename(image_path))
-        mask_file = result_folder + "/res_" + filename + '_mask.jpg'
+        mask_file = result_folder + "/res_" + filename + '_mask_triton.jpg'
         cv2.imwrite(mask_file, score_text)
 
-        file_utils.saveResult(image_path, image[:,:,::-1], polys, dirname=result_folder)
+        file_utils.saveResult(method='triton', image_path, image[:,:,::-1], polys, dirname=result_folder)
 
     print("elapsed time : {}s".format(time.time() - t))

@@ -16,10 +16,10 @@ Implementation new inference pipeline using NVIDIA Triton Inference Server for C
 ### 1. Install dependencies
 #### Requirements
 ```
-pip install -r requirements.txt
+$ pip install -r requirements.txt
 ```
 ### 2. Install required environment for inference using Triton server
-Check inference/README.md for details. Install tools/packages included:
+Check [./README_Triton.md](./README_Triton.md) for details. Install tools/packages included:
 - TensorRT
 - Docker
 - nvidia-docker
@@ -39,25 +39,57 @@ General | SynthText, IC13, IC17 | Eng + MLT | For general purpose | [Click](http
 IC15 | SynthText, IC15 | Eng | For IC15 only | [Click](https://drive.google.com/open?id=1i2R7UIUqmkUtF0jv_3MXTqmQ_9wuAnLf)
 LinkRefiner | CTW1500 | - | Used with the General Model | [Click](https://drive.google.com/open?id=1XSaFwBkOaFOdtk4Ane3DFyJGPRw6v5bO)
 
-### 5. Run preparation script before run Triton server:
-a. Triton Inference Server inference: see detail at inference/README.md <br>
-Run the preparation script to get things ready for Triton server, steps covered:
+### 5. Model preparation before run Triton server:
+a. Triton Inference Server inference: see details at [./README_Triton.md](./README_Triton.md)<br>
+Initially, you need to run a (.sh) script to prepare Model Repo, then, you just need to run Docker image when inferencing.  Script get things ready for Triton server, steps covered:
 - Convert downloaded pretrain into mutiple formats
 - Locate converted model formats into Triton's Model Repository
 - Run (Pull first if not exist) Triton Server image from NGC
 
-Now Check Ready status for begin infer...
-Example infer by TensorRT:
+Check if Server running correctly:
 ```
-python 
+$ curl -v localhost:8000/v2/health/ready
+...
+< HTTP/1.1 200 OK
+< Content-Length: 0
+< Content-Type: text/plain
+```
+
+Now everythings ready, start inference by:
+- Run docker image of Triton server (replace mount -v path to your full path to model_repository):
+```
+$ sudo docker run --gpus all --rm -p8000:8000 -p8001:8001 -p8002:8002 -v /home/maverick911/repo/triton-server-CRAFT-pytorch/model_repository:/models nvcr.io/nvidia/tritonserver:21.05-py3 tritonserver --model-repository=/models
+...
++------------+---------+--------+
+| Model      | Version | Status |
++------------+---------+--------+
+| detec_onnx | 1       | READY  |
+| detec_pt   | 1       | READY  |
+| detec_trt  | 1       | READY  |
++------------+---------+--------+
+I0714 00:37:55.265177 1 grpc_server.cc:4062] Started GRPCInferenceService at 0.0.0.0:8001
+I0714 00:37:55.269588 1 http_server.cc:2887] Started HTTPService at 0.0.0.0:8000
+I0714 00:37:55.312507 1 http_server.cc:2906] Started Metrics Service at 0.0.0.0:8002
+```
+Run infer by cmd: 
+```
+$ python infer_triton.py -m='detec_trt' -x=1 --input='./images/image_1.jpg' -i='grpc' -u='localhost:8001'
+
+$ python infer_triton.py -m='detec_onnx' -x=1 --input='./images/image_1.jpg'
 ```
 
 #### Arguments
-* `--trained_model`: pretrained model
+* `-m`: name of model with format
+* `-x`: version of model
+* `--input`: input image/folder
+* `-i`: protocol (HTTP/gRPC)
+* `-u`: URL of corresponding protocol (HTTP-8000, gRPC-8001)
+* ... (Details in ./infer_triton.py)
+
 
 b. Classic Pytorch (.pth) inference:
-``` (with python 3.7)
-python test.py --trained_model=[weightfile] --test_folder=[folder path to test images]
+```
+$ python test.py --trained_model=[weightfile] --test_folder=[folder path to test images]
 ```
 
 The result image and socre maps will be saved to `./result` by default.
