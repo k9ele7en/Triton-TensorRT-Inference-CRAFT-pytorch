@@ -67,7 +67,7 @@ def build_onnx(args):
 
 def main():
     parser = argparse.ArgumentParser(description="Exports akaOCR model to ONNX, and post-processes it to insert TensorRT plugins")
-    parser.add_argument("--weight", required=False, help="Path to input model folder", default='../weight')
+    parser.add_argument("--weight", required=False, help="Path to input model folder", default='../weights')
     
     args=parser.parse_args()
 

@@ -59,7 +59,7 @@ def convert_detec(args):
 
 def main():
     parser = argparse.ArgumentParser(description="Convert torch model (.pth) into torchscript model (.pt)")
-    parser.add_argument("--weight", required=False, help="Path to input model folder", default='../weight')
+    parser.add_argument("--weight", required=False, help="Path to input model folder", default='../weights')
 
     args=parser.parse_args()
 

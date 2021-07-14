@@ -61,7 +61,7 @@ def build_detec_engine(onnx_path, using_half, engine_file, dynamic_input=True, w
 if __name__ == '__main__':
     # set dynamic input size in associate function, find: profile.set_shape
     parser = argparse.ArgumentParser(description="Convert ONNX model into TensorRT")
-    parser.add_argument("--weight", required=False, help="Path to input model folder", default='../weight')
+    parser.add_argument("--weight", required=False, help="Path to input model folder", default='../weights')
 
     args=parser.parse_args()
     logger.info("Converting detec ONNX to TensorRT engine...")
