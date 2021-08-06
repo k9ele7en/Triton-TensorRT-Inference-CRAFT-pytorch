@@ -8,7 +8,7 @@ Implementation new inference pipeline using NVIDIA Triton Inference Server for C
 
 ### Author
 k9ele7en. Give 1 star of you find some value in this repo. <br>
-[Donation by Nano]: nano_1q8aj68brbw88hira69z4r4hh9qi3oae6inmrpdtc7korpuuwj785zhdtc8i
+[Donate] nano_1q8aj68brbw88hira69z4r4hh9qi3oae6inmrpdtc7korpuuwj785zhdtc8i
 
 ### License
 [BSD-3-Clause License] The BSD 3-clause license allows you almost unlimited freedom with the software so long as you include the BSD copyright and license notice in it (found in Fulltext). 
