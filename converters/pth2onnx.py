@@ -27,7 +27,7 @@ logger = initial_logger()
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 def build_onnx(args):
-    """Load the akaocr network and export it to ONNX
+    """Load the network and export it to ONNX
     """
     logger.info("Converting detec pth to onnx...")
 
@@ -66,7 +66,7 @@ def build_onnx(args):
     logger.info("Convert detec pth to ONNX sucess")
 
 def main():
-    parser = argparse.ArgumentParser(description="Exports akaOCR model to ONNX, and post-processes it to insert TensorRT plugins")
+    parser = argparse.ArgumentParser(description="Exports model to ONNX, and post-processes it to insert TensorRT plugins")
     parser.add_argument("--weight", required=False, help="Path to input model folder", default='../weights')
     
     args=parser.parse_args()
