@@ -27,7 +27,7 @@ Thank you.
 $ pip install -r requirements.txt
 ```
 ### 2. Install required environment for inference using Triton server
-Check [./README_Triton.md](./README_Triton.md) for details. Install tools/packages included:
+Check [./README_ENV.md](./README_ENV.md) for details. Install tools/packages included:
 - TensorRT
 - Docker
 - nvidia-docker
@@ -48,7 +48,7 @@ IC15 | SynthText, IC15 | Eng | For IC15 only | [Click](https://drive.google.com/
 LinkRefiner | CTW1500 | - | Used with the General Model | [Click](https://drive.google.com/open?id=1XSaFwBkOaFOdtk4Ane3DFyJGPRw6v5bO)
 
 ### 5. Model preparation before run Triton server:
-a. Triton Inference Server inference: see details at [./README_Triton.md](./README_Triton.md)<br>
+a. Triton Inference Server inference: see details at [./README_ENV.md](./README_ENV.md)<br>
 Initially, you need to run a (.sh) script to prepare Model Repo, then, you just need to run Docker image when inferencing.  Script get things ready for Triton server, steps covered:
 - Convert downloaded pretrain into mutiple formats
 - Locate converted model formats into Triton's Model Repository
@@ -66,7 +66,7 @@ $ curl -v localhost:8000/v2/health/ready
 Now everythings ready, start inference by:
 - Run docker image of Triton server (replace mount -v path to your full path to model_repository):
 ```
-$ sudo docker run --gpus all --rm -p8000:8000 -p8001:8001 -p8002:8002 -v /home/maverick911/repo/triton-server-CRAFT-pytorch/model_repository:/models nvcr.io/nvidia/tritonserver:21.05-py3 tritonserver --model-repository=/models
+$ sudo docker run --gpus all --rm -p8000:8000 -p8001:8001 -p8002:8002 -v /home/maverick911/repo/Triton-TensorRT-Inference-CRAFT-pytorch/model_repository:/models nvcr.io/nvidia/tritonserver:21.05-py3 tritonserver --model-repository=/models
 ...
 +------------+---------+--------+
 | Model      | Version | Status |

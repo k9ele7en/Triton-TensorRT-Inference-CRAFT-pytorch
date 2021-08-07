@@ -216,9 +216,9 @@ $ curl https://get.docker.com | sh \
 Pull repo, image, and prepare models (Where <xx.yy> is the version of Triton that you want to use):
 ```
 $ sudo docker pull nvcr.io/nvidia/tritonserver:<xx.yy>-py3
-$ git clone https://github.com/huukim911/triton-server-CRAFT-pytorch.git
+$ git clone https://github.com/huukim911/Triton-TensorRT-Inference-CRAFT-pytorch.git
 Run the .sh script to convert model into target formats, prepare Model Repo and start Triton server container:
-$ cd triton-server-CRAFT-pytorch
+$ cd Triton-TensorRT-Inference-CRAFT-pytorch
 $ sh prepare.sh
 Convert source model into target formats and copy into Triton's Model Repository successfully.
 ```
@@ -227,9 +227,9 @@ Run server in container and client in cmd
 ```
 $ sudo docker run --gpus all --rm -p8000:8000 -p8001:8001 -p8002:8002 -v <full_path_to/model_repository>:/models nvcr.io/nvidia/tritonserver:<xx.yy>-py3 tritonserver --model-repository=/models
 
-For example, run on server with full path "/home/maverick911/repo/triton-server-CRAFT-pytorch
+For example, run on server with full path "/home/maverick911/repo/Triton-TensorRT-Inference-CRAFT-pytorch
 /model_repository":
-$ sudo docker run --gpus all --rm -p8000:8000 -p8001:8001 -p8002:8002 -v /home/maverick911/repo/triton-server-CRAFT-pytorch
+$ sudo docker run --gpus all --rm -p8000:8000 -p8001:8001 -p8002:8002 -v /home/maverick911/repo/Triton-TensorRT-Inference-CRAFT-pytorch
 /model_repository:/models nvcr.io/nvidia/tritonserver:21.05-py3 tritonserver --model-repository=/models
 
 +----------------------+---------+--------+
@@ -244,7 +244,7 @@ I0611 04:10:23.080860 1 http_server.c9:2906] Started Metrics Service at 0.0.0.0:
 ```
 2. Infer by client in cmd (this repo), with method (triton), model name (<model_type>_\<format>), version (not required). For ex:
 ```
-$ cd triton-server-CRAFT-pytorch/
+$ cd Triton-TensorRT-Inference-CRAFT-pytorch/
 $ python infer_triton.py -m='detec_trt' -x=1 --test_folder='./images'
 Request 1, batch size 1s/sample.jpg
 elapsed time : 0.9521937370300293s
@@ -258,7 +258,7 @@ elapsed time : 1.244419813156128s
 Run server in container and client sdk in container:
 1. Start the server side:
 ```
-$ sudo docker run --gpus all --rm -p8000:8000 -p8001:8001 -p8002:8002 -v /home/maverick911/repo/triton-server-CRAFT-pytorch/model_repository:/models nvcr.io/nvidia/tritonserver:21.05-py3 tritonserver --model-repository=/models
+$ sudo docker run --gpus all --rm -p8000:8000 -p8001:8001 -p8002:8002 -v /home/maverick911/repo/Triton-TensorRT-Inference-CRAFT-pytorch/model_repository:/models nvcr.io/nvidia/tritonserver:21.05-py3 tritonserver --model-repository=/models
 
 +----------------------+---------+--------+
 | Model                | Version | Status |

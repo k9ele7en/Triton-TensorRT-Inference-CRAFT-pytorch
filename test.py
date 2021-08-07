@@ -176,4 +176,4 @@ if __name__ == '__main__':
     print("Done, elapsed time : {}s. Check at folder result/".format(time.time() - t))
 
 # Example cmd:
-# python test.py --weight /home/maverick911/repo/triton-server-CRAFT-pytorch/weight/craft_mlt_25k.pth 
+# python test.py --weight /home/maverick911/repo/Triton-TensorRT-Inference-CRAFT-pytorch/weight/craft_mlt_25k.pth 
