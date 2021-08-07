@@ -7,8 +7,9 @@ Official Pytorch implementation of CRAFT text detector | [Paper](https://arxiv.o
 Implementation new inference pipeline using NVIDIA Triton Inference Server for CRAFT text detector in Pytorch.
 
 ### Author
-k9ele7en. Give 1 star of you find some value in this repo. <br>
+k9ele7en. Give 1 star if you find some value in this repo. <br>
 [Donate] nano_1q8aj68brbw88hira69z4r4hh9qi3oae6inmrpdtc7korpuuwj785zhdtc8i
+Thank you.
 
 ### License
 [BSD-3-Clause License] The BSD 3-clause license allows you almost unlimited freedom with the software so long as you include the BSD copyright and license notice in it (found in Fulltext). 
